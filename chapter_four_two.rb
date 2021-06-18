@@ -130,4 +130,4 @@
 
   #多重代入で別々に変数として受け取る
   quotient, remainder = 14.divmod(3)
-  puts "商=#{quotient}, 余り=#{remainder}"    # ==> 商=4, 余り=2
+  puts "商=#{quotient}, 余り=#{remainder}"    # ==> 商=4, 余り=2　　　　　
