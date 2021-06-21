@@ -47,3 +47,38 @@
   #ブロックの戻り値が最初に真になった要素を返す
   even_number = numbers.find { |n| n.even? }
   puts even_number  # ==> [2]
+
+#[4.4.4]inject/reduce
+#injectメソッド(エイリアスメソッドはreduce)はたたみ込み演算を行うメソッドです。実際のコードを見ながらの方が理解しやすいでしょう。
+# EX eachメソッドを使って１から４までの値を変数sumに加算していくコード
+  numbers = [1, 2, 3, 4]
+  sum = 0
+  numbers.each { |n| sum += n }
+  puts sum  # ==> 10
+
+#上のコードをinjectを使って書くと下記のようになります。これをサンプルに解説をしていきます。
+  numbers = [1, 2, 3, 4]
+  sum = numbers.inject(0) { |result, n| result + n }
+  puts sum  # ==> 10
+
+#ブロックの第1引数(サンプルではresult)は初回のみinjectメソッドの引数(サンプルでは0)が入ります。2回目以降は前回のブロックの戻り値が入ります。
+#ブロックの第2引数(サンプルではn)は配列の各要素(1, 2, 3, 4)が順番に入ります。
+#ブロックの戻り値は次の回に引き継がれ、ブロックの第1引数(result)に入ります。繰り返し処理が最後まで終わると、ブロックの戻り値がinjectメソッドとブロックは次のように協調します。
+
+numbers = [1, 2, 3, 4]
+sum = numbers.inject(0) { |result, n| result + n }
+
+#[1回目]：result=0 , n=1 , 0+1=1  ==> これが次のresultに入る。
+#[2回目]：result=1 , n=2 , 1+2=2  ==> この結果が次のresultに入る。
+#[3回目]：result=3 , n=3 , 3+3=6  ==> この結果が次のresultに入る。
+#[4回目]：result=6 , n=4 , 6+4=10 ==> 最後の要素に達したのでこれがinjectメソッドの戻り値になる。
+
+#別の見方をすると…
+puts ((((0 + 1) +2 ) +3 ) + 4)    # ==> 10
+
+#injectメソッドは数値以外のオブジェクトに対して適用することも可能です。
+# EX 文字列に対してinjectメソッドを使う
+  puts ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].inject('Sun') { |result, s| result + s }
+# ==> SunMonTueWedThuFriSat
+# 別の見方をすると…
+puts (((((('Sun' + 'Mon') +'Tue' ) +'Wed' ) + 'Thu') + 'Fri') + 'Sat')    # ==> SunMonTueWedThuFriSat
