@@ -39,3 +39,11 @@
   #3の倍数を除外する(3の倍数以外を集める)
   non_multiples_of_numbers = numbers.reject { |n| n % 3 == 0}
   puts non_multiples_of_numbers   # ==> [1, 2, 4, 5]
+
+#[4.4.3]find/detect
+#findメソッド(エイリアスメソッドはdetect)はブロックの戻り値が真になった最初の要素を返します。
+# EX 偶数の数値だを集める
+  numbers = [1, 2, 3, 4, 5, 6]
+  #ブロックの戻り値が最初に真になった要素を返す
+  even_number = numbers.find { |n| n.even? }
+  puts even_number  # ==> [2]
