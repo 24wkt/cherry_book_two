@@ -86,3 +86,27 @@
   puts liquid?(0)     # ==> true
   puts liquid?(99)    # ==> true
   puts liquid?(100)   # ==> false
+
+#[4.5.3]case文で使う
+#範囲オブジェクトはcase文と組み合わせることもできます。
+# EX 年齢に応じて料金を判定するメソッド
+  def charge(age)
+    case age
+    #0歳から5歳
+    when 0..5
+      0
+    #6歳から12歳
+    when 6..12
+      300
+    #13歳から18歳
+    when 13..18
+      600
+    #それ以外の場合
+    else
+      1000
+    end
+  end
+  puts charge(3)    # ==> 0
+  puts charge(12)   # ==> 300
+  puts charge(16)   # ==> 600
+  puts charge(25)   # ==> 1000
