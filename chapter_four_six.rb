@@ -28,3 +28,14 @@ class RgbTest < Minitest::Test
   end
 end
 
+# EX このままテストファイルを実行する
+
+1) Error:
+RgbTest#test_to_hex:
+NoMethodError: undefined method `to_hex' for #<RgbTest:0x00007fe82e8e1570>
+    rgb_test.rb:5:in `test_to_hex'
+
+1 runs, 0 assertions, 0 failures, 1 errors, 0 skips
+
+# ==> 案の定、テストは失敗しました。NoMethodErrorなので、「to_hex」が見つからない、定義されていないと言われています。
+
