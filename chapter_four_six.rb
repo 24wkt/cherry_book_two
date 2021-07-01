@@ -197,3 +197,125 @@ end
 
 # ==> ここでピンと来ないときは「[4.4.4]inject/reduce」を読み直そう
 
+#[4.6.3]to_intsメソッドを作成する
+#16進数の文字列を10進数の数値3つに変換するメソッドです。
+
+  to_ints('#000000')    # ==> [0, 0, 0]
+  to_ints('#ffffff')    # ==> [255, 255, 255]
+  to_ints('#043c78')    # ==> [4, 60, 120]
+
+#to_hexメソッドの時と同じようにテストコードを書き込みましょう！
+
+# EX rgb_test.rb
+  class RgbTest < Minitest::Test
+    def test_to_hex
+      assert_equal '#000000', to_hex(0, 0, 0)
+      assert_equal '#ffffff', to_hex(255, 255, 255)
+      assert_equal '#043c78', to_hex(4, 60, 120)
+    end
+
+    def test_to_ints                                    # 新しく追加
+      assert_equal [0, 0, 0], to_ints('#000000')        #    |
+    end                                                 #    |
+  end
+
+#次にrgb.rbを開き、to_intsメソッドの仮実装します。
+
+# EX rgb.rb
+  def to_hex(r, g, b)
+    [r, g, b].inject('#') do |hex, n|
+      hex + n.to_s(16).rjust(2, "0")
+    end
+  end
+
+  def to_ints(hex)                      # 新しく追加
+    [0, 0, 0]                           #    |
+  end                                   #    |
+
+# EX テストを実行してみる
+  ryotaono@onoyuufutoshinoMacBook-Air cherry_book_two % ruby rgb_test.rb
+  Run options: --seed 44069
+
+  # Running:
+
+  ..
+
+  Finished in 0.000693s, 2886.0032 runs/s, 5772.0064 assertions/s.
+
+  2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
+
+#二つ目の検証コードを追加しましょう！
+# EX rgb_test.rb
+require 'minitest/autorun'
+require_relative './rgb.rb'
+
+class RgbTest < Minitest::Test
+  def test_to_hex
+    assert_equal '#000000', to_hex(0, 0, 0)
+    assert_equal '#ffffff', to_hex(255, 255, 255)
+    assert_equal '#043c78', to_hex(4, 60, 120)
+  end
+
+  def test_to_ints
+    assert_equal [0, 0, 0], to_ints('#000000')
+    assert_equal [255, 255, 255], to_ints('#ffffff')    # <== 新しく追加
+  end
+end
+
+# EX テストを実行してみよう
+  1) Failure:
+  RgbTest#test_to_ints [rgb_test.rb:13]:
+  Expected: [255, 255, 255]
+    Actual: [0, 0, 0]
+
+# ==> 失敗してしまいました…。
+
+#to_intsメソッドの実装で必要な手順は大きく分けて次の２つです。
+
+# ①文字列から16進数の文字列を2文字ずつ取り出す。
+# ②2桁の16進数を10進数の整数に変換する。
+
+#まず、16進数の文字列を2つずつ取り出す方法ですが、これは[]と範囲オブジェクトを使うことにします。
+#「[4.5.1]配列と文字列の一部を抜き出す」のこうでも既に説明した通り、例えば、文字列の2文字目から4文字目までを取り出したい時は、次のように取り出すことができます。
+
+# EX 範囲オブジェクトで取り出す方法
+  s = 'abcde'
+  puts s[1..3]  # ==> bcd
+
+#この方法を利用することによって次のようのに文字列からR(赤)、G(緑)、B(青)の各値を取り出すことができます。
+
+# EX 文字列からR(赤)、G(緑)、B(青)の各値を取り出す方法
+  hex = '#12abcd'
+  puts r = hex[1..2]    # ==>12
+  puts g = hex[3..4]    # ==>ab
+  puts b = hex[5..6]    # ==>cd
+
+#次に考えるのは16進数の文字列を10進数の整数に変更する方法です。
+#これはstringクラスにhexというズバリそのもののメソッドがあります。
+
+# EX hexクラス
+  puts '00'.hex   # ==> 0
+  puts 'ff'.hex   # ==> 255
+  puts '2a'.hex   # ==> 42
+
+#さあ、これらの知識を結合すると、to_intsメソッドを次のように実装できます。
+# EX rgb.rb内を下記のように書き換え
+  def to_ints(hex)
+    r = hex[1..2]
+    g = hex[3..4]
+    b = hex[5..6]
+    ints = []
+    [r, g, b].each do |s|
+      ints << s.hex
+    end
+    puts ints
+  end
+
+#上のコードの処理フローは次の通りです。
+# ・引数の文字列から3つの16進数を抜き出す。
+# ・3つの16進数を配列に入れ、ループを回しながら10進数の整数に変換した値を別の配列に詰め込む。
+# ・10進数の整数が入った配列を返す。
+
+#テストを実行してみましょう！
+# EX テスト結果
+
