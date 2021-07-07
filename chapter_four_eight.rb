@@ -14,3 +14,36 @@
   #     2: melon
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#[4.8.2]with_indexメソッドを使った添字付きの繰り返し処理
+#前項で紹介したeach_with_indexメソッドだと、eachメソッドの代わりにしか使えません。
+#例えばmapメソッドで繰り返し処理をしつつ、添字も同時に取得したい時はそうすればいいでしょうか？
+#このようなケースではmapメソッドとwith_indexメソッドを組みわせて使います。
+
+  fruits = ['apple', 'orange', 'melon']
+  # mapとして処理しつつ、添字も受け取る
+  fruits.map.with_index { |fruit, i| "#{i}: #{fruit}" }
+  # ==> ["0: apple", "1: orange", "2: melon"]
+
+#with_indexメソッドはmap以外のメソッドとも組み合わせることができます。
+
+  fruits = ['apple', 'orange', 'melon']
+  # 名前に"a"を含み、なおかつ添字が奇数である要素を削除する
+  fruits.delete_if.with_index { |fruit, i| fruit.include?('a') && i.odd? }
+  puts fruits
+  # ==> ["apple", "melon"]
+
+#このメソッドはEnumeratorクラスのインスタンスメソッドです。
+#そして、eachメソッドやmapメソッド、delete_ifメソッドなど繰り返し処理を行うメソッドの大半はブロックを省略して呼び出す、Enumeratorオブジェクトを返すようになっています。
+
+  fruits = ['apple', 'orange', 'melon']
+  # ブロックなしでメソッドを呼び出すとEnumeratorオブジェクトが返る。よってwith_indexが呼び出される
+  puts fruits.each
+  # ==> #<Enumerator:0x00007fec7a134930> / <Enumerator: ['apple', 'orange', 'melon']:each>
+  puts fruits.map
+  # ==> #<Enumerator:0x00007fec7a134930> / <Enumerator: ['apple', 'orange', 'melon']:map>
+  puts fruits.delete_if
+  # ==> #<Enumerator:0x00007fec7a134930> / <Enumerator: ['apple', 'orange', 'melon']:each>
+
+#このようになっているため、with_indexメソッドはあたかも様々な処理用のメソッドと組み合わせて実行できるように見えるのです。
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
