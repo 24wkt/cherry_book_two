@@ -118,3 +118,59 @@
 #while文やuntil文を書く場合は無限ループを発生させないように注意してください。
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#[4.9.5]for文
+#配列やハッシュはfor文で繰り返し処理することもできます。
+
+  for 変数　in 配列やハッシュ
+    繰り返し処理
+  end
+
+#上の説明では「配列やハッシュ」と書きましたが、厳密にはeachメソッドを定義しているオブジェクトであれば何でも構いません。
+
+# EX 配列の中身を順番に加算していくコード
+  numbers = [1, 2, 3, 4]
+  sum = 0
+  for n in numbers
+    sum += n
+  end
+  puts sum
+  # ==> 10
+
+#とはいえ、上のfor文は実質的にはeach文を使った次のコードと同じです。Rubyのプログラムでは通常、for文よりもeachメソッドを使います。
+  numbers = [1, 2, 3, 4]
+  sum = 0
+  numbers.each do |n|
+    sum += n
+  end
+  puts sum
+  # ==> 10
+
+#厳密には全く同じではなく、for文の場合は配列の要素を受け取る変数やfor文の中で作成したローカル変数がfor文の外でも使える、という違いがあります。
+
+  numbers = [1, 2, 3, 4]
+  sum = 0
+  numbers.each do |n|
+    sum_value = n.even? ? n * 10 :n
+    sum += sum_value
+  end
+  # ブロック引数やブロック内で作成した変数はブロックの外では参照できない
+  puts n
+  # ==> (NameError) undefined local variable or method `n' for main:Object
+  puts sum_value
+  # ==> (NameError) undefined local variable or method `sum_value' for main:Object
+
+  numbers = [1, 2, 3, 4]
+  sum = 0
+  for n in numbers
+    sum_value = n.even? ? n * 10 : n
+    sum += sum_value
+  end
+  # for文で作成された変数はfor文の外でも参照できる
+  puts n
+  # ==> 4
+  puts sum_value
+  # ==> 40
+
+#このような微妙な違いはあるものの、Rubyではfor文ではなく、eachメソッドやmapメソッドといった繰り返し処理用のメソッドを使う場合がほとんどです。
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
