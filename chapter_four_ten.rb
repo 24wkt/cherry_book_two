@@ -71,3 +71,82 @@
   #     orange, 1
   #     orange, 2
   #     orange, 3
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#[4.10.2]throwとcatchを使った大域脱出
+#先ほど「breakでは一番内側の繰り返し処理しか脱出できない」と説明しました。一気に外側のループまで脱出したい場合は、Krenelモジュールのthrowメソッドとcatchメソッドを使います。
+
+  catch タグ　do
+    # 繰り返し処理など
+    throw タグ
+  end
+
+#throw、catchというキーワードは、他の言語では例外処理に使われる場合がありますが、Rubyのthrow、catchは例外処理とは関係ありません。Rubyではraiseとrescueを例外処理で使います。
+#throwメソッドとcatchメソッドは次のように使います。
+# EX "orange"と３の組み合わせが出たらすべての繰り返し処理を脱出するコード
+  fruits = ['apple', 'melon', 'orange']
+  numbers = [1, 2, 3]
+  catch :done do
+    fruits.shuffle.each do |fruit|
+      numbers.shuffle.each do |n|
+        puts "#{fruit}, #{n}"
+        if fruit == 'orange' && n == 3
+          # 全ての繰り返し処理を脱出する
+          throw :done
+        end
+      end
+    end
+  end
+  # ==> orange, 2
+  #     orange, 1
+  #     orange, 3
+
+#タグには通常シンボルを使います。
+#throwとcatchのタグが一致しない場合はエラーが発生します。
+# EX
+  fruits = ['apple', 'melon', 'orange']
+  numbers = [1, 2, 3]
+  catch :done do
+    fruits.shuffle.each do |fruit|
+      numbers.shuffle.each do |n|
+        puts "#{fruit}, #{n}"
+        if fruit == 'orange' && n == 3
+          # catchと一致しないタグをthrowする
+          throw :foo
+        end
+      end
+    end
+  end
+  # ==> /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:9:in `throw': uncaught throw :foo (UncaughtThrowError)
+	#     from /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:9:in `block (3 levels) in <main>'
+	#     from /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:5:in `each'
+	#     from /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:5:in `block (2 levels) in <main>'
+	#     from /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:4:in `each'
+	#     from /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:4:in `block in <main>'
+	#     from /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:3:in `catch'
+	#     from /Users/ryotaono/Desktop/programming/cherry_book_two/tempCodeRunnerFile.rb:3:in `<main>'
+  #     apple, 1
+  #     apple, 3
+  #     apple, 2
+  #     orange, 3
+
+#throwメソッドに第二引数を渡すとcatchメソッドの戻り値になります。
+# EX
+  ret =
+  catch :done do
+    throw :done
+  end
+  puts ret
+  # ==> nil
+
+  ret =
+  catch :done do
+    throw :done, 123
+  end
+  puts ret
+  # ==> 123
+
+#上のコード例のように、catchとthrowは繰り返し処理と無関係に利用することができます。
+#ただし、実際は繰り返し処理の大域脱出で使われることが多いと思います。
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
